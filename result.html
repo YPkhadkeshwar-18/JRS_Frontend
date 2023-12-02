@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Dynamic Form</title>
+  </head>
+  <style>
+    @keyframes ani {
+      0% {
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+    * {
+      margin: 0px;
+      padding: 5px;
+    }
+    .body {
+      background-image: url("p7.jpeg");
+    }
+    #d1 {
+      margin: 20px;
+      padding: 5px;
+    }
+    #f {
+      background-image: url("p7.jpeg");
+    }
+    #d2 {
+      color: azure;
+    }
+    #h1 {
+      position: relative;
+      background-image: url("p7.jpeg");
+      text-align: center;
+      color: aliceblue;
+    }
+    #z {
+      position: relative;
+      top: 1px;
+      text-align: center;
+      animation: ani infinite 1s ease-in;
+    }
+    nav ul {
+      display: flex;
+    }
+    ul {
+      color: white;
+    }
+    nav {
+      background-color: black;
+    }
+    li {
+      padding: 10px;
+      list-style: none;
+    }
+    img {
+      width: 25px;
+      height: 25px;
+    }
+  </style>
+  <body>
+    <nav>
+      <ul>
+        <li>
+          <img src="img4.png" />
+        </li>
+        <a href="index.html"><li>Home</li></a>
+        <a href="inst.html"><li>instructions</li></a>
+        <a href="career.html"><li>Career Choices</li></a>
+      </ul>
+    </nav>
+    <div id="d1">
+      <h1 id="h1">Test</h1>
+      <div id="d2">
+        <form id="f">
+          <div id="questions-container"></div>
+          <hr />
+          <button type="button" onclick="submitForm()">Submit</button>
+        </form>
+      </div>
+    </div>
+    <script>
+      const questions = [
+        {
+          question: "What do you like to do in your free time?",
+          options: [
+            "Something creative",
+            "Imagination beyond bound",
+            "Enthusiastic activity",
+            "Reading/Writing",
+          ],
+        },
+        {
+          question: "Pick a quality that you have?",
+          options: [
+            "Study",
+            "Analytical thinking",
+            "Decision making skills",
+            "Good communication",
+            "Research skill",
+          ],
+        },
+        {
+          question: "How do you describe your personality?",
+          options: [
+            "Innovative",
+            "Perfect planner",
+            "Positive attitude",
+            "Bold",
+          ],
+        },
+        {
+          question: "What kind of work approach do you prefer?",
+          options: ["Hard work", "Smart work", "Quick work", "Team work"],
+        },
+        {
+          question: "Things you are good at?",
+          options: [
+            "Problem solving",
+            "Adapting to surroundings",
+            "Dealing with people",
+            "convincing to people",
+          ],
+        },
+        {
+          question: "What would be your approach to your work friends?",
+          options: [
+            "Work remotely with colleagues",
+            "Strictly professional",
+            "Few friends at work",
+            "People you can hang out with",
+          ],
+        },
+        {
+          question: "How do you generally feel about working?",
+          options: [
+            "Both passion and money",
+            "To achieve big success",
+            "Love your job",
+          ],
+        },
+        {
+          question: "What kind of work environment would you prefer?",
+          options: [
+            "Sustainable",
+            "Artistic",
+            "Quiet and focused",
+            "Supportive",
+          ],
+        },
+        {
+          question: "How do you like your typical workday to look like?",
+          options: [
+            "9 to 5 job",
+            "Can work overtime if it pays well",
+            "Work from home",
+            "Monday to Friday",
+          ],
+        },
+        {
+          question: "How do you like your typical workday to look like?",
+          options: [
+            "9 to 5 job",
+            "Can work overtime if it pays well",
+            "Work from home",
+            "Monday to Friday",
+          ],
+        },
+      ];
+
+      const questionsContainer = document.getElementById("questions-container");
+
+      // Dynamically populate questions and options
+      questions.forEach((q, index) => {
+        const questionDiv = document.createElement("div");
+        questionDiv.classList.add("e1");
+        const questionElement = document.createElement("h2");
+        questionElement.textContent = `Q.${index + 1} ${q.question}`;
+        questionDiv.appendChild(questionElement);
+
+        q.options.forEach((option, i) => {
+          const input = document.createElement("input");
+          input.type = "radio";
+          input.id = `q${index + 1}-${i + 1}`;
+          input.name = `q${index + 1}`;
+          input.value = option;
+          const label = document.createElement("label");
+          label.htmlFor = `q${index + 1}-${i + 1}`;
+          label.textContent = option;
+
+          questionDiv.appendChild(input);
+          questionDiv.appendChild(label);
+        });
+
+        questionsContainer.appendChild(questionDiv);
+      });
+      function submitForm() {
+        const formData = new FormData(document.getElementById("f"));
+
+        // Convert formData to JSON
+        const formDataJson = {};
+        formData.forEach((value, key) => {
+          formDataJson[key] = value;
+        });
+
+        // Log the JSON to the console
+        console.log(JSON.stringify(formDataJson));
+
+        // Rest of your code...
+
+        fetch("http://localhost:3000/api/submitForm", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formDataJson),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data.result);
+            // Redirect to the result page if needed
+            localStorage.setItem("computedData", JSON.stringify(data.result));
+            redirectToResultPage();
+          })
+          .catch((error) => console.error("Error:", error));
+      }
+      function redirectToResultPage() {
+        // Replace the URL below with the URL of the page you want to redirect to
+        window.location.href = "display.html";
+        //som
+      }
+    </script>
+  </body>
+</html>
